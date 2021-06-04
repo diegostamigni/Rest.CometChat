@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Rest.CometChat.Abstractions;
 using Rest.CometChat.ServiceModel.Extensions;
@@ -22,6 +23,36 @@ namespace Rest.CometChat.Tests
 				() => result.CreatedAtDateTime().ShouldNotBeNull(),
 				() => result.Name.ShouldNotBeNullOrEmpty()
 			);
+		}
+
+		[Test]
+		public async Task DeactivateUser_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task DeactivateUsers_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task ReactivateUsers_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task BlockUsers_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task UnblockUsers_Success()
+		{
+			throw new NotImplementedException();
 		}
 
 		protected override IUserService GetService()
