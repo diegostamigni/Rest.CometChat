@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
 using Rest.CometChat.Abstractions;
 using Rest.CometChat.Requests;
 using Rest.CometChat.Responses;
@@ -14,7 +12,6 @@ using Rest.CometChat.ServiceModel;
 
 namespace Rest.CometChat
 {
-
 	public class UserService : Service, IUserService
 	{
 		public UserService(ICometChatConfig config) : base(config)
@@ -31,18 +28,46 @@ namespace Rest.CometChat
 		{
 		}
 
-		public Task<User?> CreateAsync(
+		public async Task<User?> CreateAsync(
 			CreateUserRequest request,
 			CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			var requestUri = new Uri(this.BaseUri, "users");
+			using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+			{
+				Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
+			};
+
+			using var httpClient = this.HttpClient;
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
+			using var stream = await response.Content.ReadAsStreamAsync();
+
+			var result = await JsonSerializer
+				.DeserializeAsync<DataContainer<User>>(stream, this.JsonSerializerOptions, cancellationToken);
+
+			return result?.Entity;
 		}
 
-		public Task<PaginatedList<User>?> ListAsync(
-			ListUserOptions options,
+		public async Task<PaginatedList<User>?> ListAsync(
+			ListUserOptions? options = default,
 			CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			var requestUri = new Uri(this.BaseUri, "users");
+			if (options is not null)
+			{
+				// TODO: Append query items
+			}
+
+			using var httpClient = this.HttpClient;
+			using var stream = await httpClient.GetStreamAsync(requestUri);
+
+			return await JsonSerializer
+				.DeserializeAsync<PaginatedList<User>>(stream, this.JsonSerializerOptions, cancellationToken);
 		}
 
 		public async Task<User?> GetAsync(
@@ -60,11 +85,29 @@ namespace Rest.CometChat
 			return result?.Entity;
 		}
 
-		public Task<User?> UpdateAsync(
+		public async Task<User?> UpdateAsync(
 			UpdateUserRequest request,
 			CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			var requestUri = new Uri(this.BaseUri, $"users/{request.Uid}");
+			using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+			{
+				Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
+			};
+
+			using var httpClient = this.HttpClient;
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
+			using var stream = await response.Content.ReadAsStreamAsync();
+
+			var result = await JsonSerializer
+				.DeserializeAsync<DataContainer<User>>(stream, this.JsonSerializerOptions, cancellationToken);
+
+			return result?.Entity;
 		}
 
 		public async Task<DeactivateUserResponse?> DeactivateUserAsync(
@@ -88,10 +131,15 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users");
+			var requestUri = new Uri(this.BaseUri, "users");
 			using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri)
 			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8)
+				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
 			};
 
 			using var httpClient = this.HttpClient;
@@ -106,10 +154,15 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users");
+			var requestUri = new Uri(this.BaseUri, "users");
 			using var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
 			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8)
+				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
 			};
 
 			using var httpClient = this.HttpClient;
@@ -124,10 +177,15 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users/uid/blockedusers");
+			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
 			using var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
 			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8)
+				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
 			};
 
 			using var httpClient = this.HttpClient;
@@ -142,10 +200,15 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users/uid/blockedusers");
+			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
 			using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri)
 			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8)
+				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
+				Headers =
+				{
+					{ "Accept", "application/json" },
+					{ "Content-Type", "application/json" }
+				}
 			};
 
 			using var httpClient = this.HttpClient;
@@ -156,11 +219,21 @@ namespace Rest.CometChat
 				.DeserializeAsync<UnblockUserResponse>(stream, this.JsonSerializerOptions, cancellationToken);
 		}
 
-		public Task<PaginatedList<User>?> ListBlockedUsersAsync(
-			ListBlockedUsersOptions options = default,
+		public async Task<PaginatedList<User>?> ListBlockedUsersAsync(
+			ListBlockedUsersOptions? options = default,
 			CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
+			if (options is not null)
+			{
+				// TODO: Append query items
+			}
+
+			using var httpClient = this.HttpClient;
+			using var stream = await httpClient.GetStreamAsync(requestUri);
+
+			return await JsonSerializer
+				.DeserializeAsync<PaginatedList<User>>(stream, this.JsonSerializerOptions, cancellationToken);
 		}
 	}
 }

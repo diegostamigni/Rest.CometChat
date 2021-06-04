@@ -10,6 +10,18 @@ namespace Rest.CometChat.Tests
 	[TestFixture]
 	public class UserServiceTests : BaseServiceTests<IUserService>
 	{
+		[Test]
+		public async Task CreateUser_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task ListUsers_Success()
+		{
+			throw new NotImplementedException();
+		}
+
 		[TestCase("superhero5")]
 		[TestCase("superhero4")]
 		[TestCase("superhero3")]
@@ -23,6 +35,12 @@ namespace Rest.CometChat.Tests
 				() => result.CreatedAtDateTime().ShouldNotBeNull(),
 				() => result.Name.ShouldNotBeNullOrEmpty()
 			);
+		}
+
+		[Test]
+		public async Task UpdateUser_Success()
+		{
+			throw new NotImplementedException();
 		}
 
 		[Test]
@@ -51,6 +69,12 @@ namespace Rest.CometChat.Tests
 
 		[Test]
 		public async Task UnblockUsers_Success()
+		{
+			throw new NotImplementedException();
+		}
+
+		[Test]
+		public async Task ListBlockedUsers_Success()
 		{
 			throw new NotImplementedException();
 		}
