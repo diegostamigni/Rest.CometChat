@@ -13,7 +13,17 @@ namespace Rest.CometChat.Tests
 		[Test]
 		public async Task CreateUser_Success()
 		{
-			throw new NotImplementedException();
+			var userId = Guid.NewGuid();
+			var userName = userId.ToString("N");
+
+			var result = await this.Service!.CreateAsync(new(userId.ToString(), userName));
+			result.ShouldNotBeNull();
+			result.ShouldSatisfyAllConditions
+			(
+				() => result.Name.ShouldBe(userName),
+				() => result.Uid.ShouldBe(userId.ToString()),
+				() => result.CreatedAtDateTime().ShouldNotBeNull()
+			);
 		}
 
 		[Test]
@@ -43,10 +53,25 @@ namespace Rest.CometChat.Tests
 			throw new NotImplementedException();
 		}
 
-		[Test]
-		public async Task DeactivateUser_Success()
+		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", true)]
+		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", false)]
+		public async Task DeactivateUser_Success(string uid, bool permanent)
 		{
-			throw new NotImplementedException();
+			var result = await this.Service!.DeactivateUserAsync(uid, permanent);
+			result.ShouldNotBeNull();
+
+			if (permanent)
+			{
+				result.ShouldSatisfyAllConditions
+				(
+					() => result.Message.ShouldNotBeNullOrEmpty(),
+					() => result.Success.ShouldBe(true)
+				);
+			}
+			else
+			{
+				result.DeactivatedUids.ShouldNotBeEmpty();
+			}
 		}
 
 		[Test]

@@ -1,6 +1,9 @@
 using System;
 using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.WebUtilities;
 using Rest.CometChat.Abstractions;
 
 namespace Rest.CometChat
@@ -15,10 +18,11 @@ namespace Rest.CometChat
 
 		protected Uri BaseUri => new Uri(this.BaseUrl);
 
-		protected JsonSerializerOptions JsonSerializerOptions = new()
+		protected readonly JsonSerializerOptions JsonSerializerOptions = new()
 		{
 			PropertyNameCaseInsensitive = true,
-			IgnoreNullValues = true
+			IgnoreNullValues = true,
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
 
 		protected HttpClient HttpClient
@@ -44,6 +48,7 @@ namespace Rest.CometChat
 
 				configuredHttpClient.DefaultRequestHeaders.Add("appId", this.config.AppId);
 				configuredHttpClient.DefaultRequestHeaders.Add("apiKey", this.config.ApiKey);
+				configuredHttpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 				return configuredHttpClient;
 			}
 		}
@@ -64,5 +69,32 @@ namespace Rest.CometChat
 			this.config = config;
 			this.httpClientFactory = httpClientFactory;
 		}
+
+		protected static string OptionsToUrlQuery<TOptions>(TOptions options, string baseUrl)
+		{
+			foreach (var propertyInfo in typeof(TOptions).GetProperties(BindingFlags.Public))
+			{
+				var propertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyInfo.Name);
+				var propertyValue = propertyInfo.GetValue(options);
+				if (propertyValue is not null)
+				{
+					baseUrl = QueryHelpers.AddQueryString(baseUrl, propertyName, propertyValue.ToString());
+				}
+			}
+
+			return baseUrl;
+		}
+
+		protected HttpRequestMessage CreateRequest<TRequest>(TRequest request, HttpMethod httpMethod, Uri requestUri)
+		{
+			var requestJson = JsonSerializer.Serialize(request, this.JsonSerializerOptions);
+			return new(httpMethod, requestUri)
+			{
+				Content = new StringContent(requestJson, Encoding.UTF8, "application/json")
+			};
+		}
+
+		protected HttpRequestMessage CreateRequest<TRequest>(TRequest request, HttpMethod httpMethod, string requestUrl)
+			=> CreateRequest(request, httpMethod, new Uri(requestUrl));
 	}
 }

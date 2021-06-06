@@ -1,7 +1,9 @@
+using System.Collections.Generic;
+
 namespace Rest.CometChat.Responses
 {
-	public class DeactivateUserResponse
+	public class DeactivateUserResponse : BaseResponse
 	{
-		public string? Message { get; set; }
+		public List<string>? DeactivatedUids { get; set; }
 	}
 }

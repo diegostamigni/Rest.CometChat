@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,16 +32,8 @@ namespace Rest.CometChat
 			CancellationToken cancellationToken = default)
 		{
 			var requestUri = new Uri(this.BaseUri, "users");
-			using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
 
+			using var httpRequestMessage = CreateRequest(request, HttpMethod.Post, requestUri);
 			using var httpClient = this.HttpClient;
 			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
@@ -58,13 +49,14 @@ namespace Rest.CometChat
 			CancellationToken cancellationToken = default)
 		{
 			var requestUri = new Uri(this.BaseUri, "users");
+			var requestUrl = requestUri.AbsoluteUri;
 			if (options is not null)
 			{
-				// TODO: Append query items
+				requestUrl = OptionsToUrlQuery(options, requestUrl);
 			}
 
 			using var httpClient = this.HttpClient;
-			using var stream = await httpClient.GetStreamAsync(requestUri);
+			using var stream = await httpClient.GetStreamAsync(requestUrl);
 
 			return await JsonSerializer
 				.DeserializeAsync<PaginatedList<User>>(stream, this.JsonSerializerOptions, cancellationToken);
@@ -74,10 +66,8 @@ namespace Rest.CometChat
 			string uid,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users/{uid}");
-
 			using var httpClient = this.HttpClient;
-			using var stream = await httpClient.GetStreamAsync(requestUri);
+			using var stream = await httpClient.GetStreamAsync(new Uri(this.BaseUri, $"users/{uid}"));
 
 			var result = await JsonSerializer
 				.DeserializeAsync<DataContainer<User>>(stream, this.JsonSerializerOptions, cancellationToken);
@@ -89,17 +79,7 @@ namespace Rest.CometChat
 			UpdateUserRequest request,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users/{request.Uid}");
-			using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
-
+			using var httpRequestMessage = CreateRequest(request, HttpMethod.Post, new Uri(this.BaseUri, $"users/{request.Uid}"));
 			using var httpClient = this.HttpClient;
 			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
@@ -115,35 +95,28 @@ namespace Rest.CometChat
 			bool permanent,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, $"users/{uid}");
-
 			using var httpClient = this.HttpClient;
-			httpClient.DefaultRequestHeaders.Add("permanent", permanent.ToString());
+			using var httpRequestMessage = CreateRequest(new Dictionary<string, object>()
+			{
+				{ "permanent", permanent }
+			}, HttpMethod.Delete, new Uri(this.BaseUri, $"users/{uid}"));
 
-			using var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
-			return await JsonSerializer
-				.DeserializeAsync<DeactivateUserResponse>(stream, this.JsonSerializerOptions, cancellationToken);
+			var result = await JsonSerializer
+				.DeserializeAsync<DataContainer<DeactivateUserResponse>>(stream, this.JsonSerializerOptions, cancellationToken);
+
+			return result?.Entity;
 		}
 
 		public async Task<DeactivateUsersResponse?> DeactivateUsersAsync(
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, "users");
-			using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
-
+			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Delete, new Uri(this.BaseUri, "users"));
 			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(request, cancellationToken);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
 			return await JsonSerializer
@@ -154,19 +127,9 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, "users");
-			using var request = new HttpRequestMessage(HttpMethod.Put, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
-
+			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Put, new Uri(this.BaseUri, "users"));
 			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(request, cancellationToken);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
 			return await JsonSerializer
@@ -177,19 +140,9 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
-			using var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
-
+			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Post, new Uri(this.BaseUri, "users/uid/blockedusers"));
 			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(request, cancellationToken);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
 			return await JsonSerializer
@@ -200,19 +153,9 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
-			using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri)
-			{
-				Content = new StringContent(JsonSerializer.Serialize(uids), Encoding.UTF8),
-				Headers =
-				{
-					{ "Accept", "application/json" },
-					{ "Content-Type", "application/json" }
-				}
-			};
-
+			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Delete, new Uri(this.BaseUri, "users/uid/blockedusers"));
 			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(request, cancellationToken);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
 			return await JsonSerializer
@@ -224,13 +167,14 @@ namespace Rest.CometChat
 			CancellationToken cancellationToken = default)
 		{
 			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
+			var requestUrl = requestUri.AbsoluteUri;
 			if (options is not null)
 			{
-				// TODO: Append query items
+				requestUrl = OptionsToUrlQuery(options, requestUrl);
 			}
 
 			using var httpClient = this.HttpClient;
-			using var stream = await httpClient.GetStreamAsync(requestUri);
+			using var stream = await httpClient.GetStreamAsync(requestUrl);
 
 			return await JsonSerializer
 				.DeserializeAsync<PaginatedList<User>>(stream, this.JsonSerializerOptions, cancellationToken);
