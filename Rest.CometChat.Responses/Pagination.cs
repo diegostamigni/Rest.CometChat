@@ -4,17 +4,17 @@ namespace Rest.CometChat.Responses
 {
 	public class Pagination
 	{
-		public long? Total { get; set; }
+		public int? Total { get; set; }
 
-		public long? Count { get; set; }
+		public int? Count { get; set; }
 
 		[JsonPropertyName("per_page")]
-		public long? PerPage { get; set; }
+		public int? PerPage { get; set; }
 
 		[JsonPropertyName("current_page")]
-		public long? CurrentPage { get; set; }
+		public int? CurrentPage { get; set; }
 
 		[JsonPropertyName("total_pages")]
-		public long? TotalPages { get; set; }
+		public int? TotalPages { get; set; }
 	}
 }

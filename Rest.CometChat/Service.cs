@@ -72,7 +72,7 @@ namespace Rest.CometChat
 
 		protected static string OptionsToUrlQuery<TOptions>(TOptions options, string baseUrl)
 		{
-			foreach (var propertyInfo in typeof(TOptions).GetProperties(BindingFlags.Public))
+			foreach (var propertyInfo in typeof(TOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance))
 			{
 				var propertyName = JsonNamingPolicy.CamelCase.ConvertName(propertyInfo.Name);
 				var propertyValue = propertyInfo.GetValue(options);

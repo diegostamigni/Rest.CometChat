@@ -14,7 +14,7 @@ namespace Rest.CometChat.Abstractions
 			CancellationToken cancellationToken = default);
 
 		Task<PaginatedList<User>?> ListAsync(
-			ListUserOptions? options,
+			ListUserOptions? options = default,
 			CancellationToken cancellationToken = default);
 
 		Task<User?> GetAsync(
@@ -37,17 +37,5 @@ namespace Rest.CometChat.Abstractions
 		Task<ReactivateUserResponse?> ReactivateUsersAsync(
 			List<string> uids,
 			CancellationToken cancellationToken = default);
-
-		Task<BlockUserResponse?> BlockUsersAsync(
-			List<string> uids,
-			CancellationToken cancellationToken = default);
-
-		Task<UnblockUserResponse?> UnblockUsersAsync(
-			List<string> uids,
-			CancellationToken cancellationToken = default);
-
-		Task<PaginatedList<User>?> ListBlockedUsersAsync(
-			ListBlockedUsersOptions? options = default,
-			CancellationToken token = default);
 	}
 }

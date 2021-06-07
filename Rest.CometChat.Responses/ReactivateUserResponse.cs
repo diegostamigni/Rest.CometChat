@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Rest.CometChat.Responses
 {
-	public class ReactivateUserResponse
+	public class ReactivateUserResponse : BaseResponse
 	{
-		[JsonPropertyName("data")]
-		public Dictionary<string, BaseResponse>? ReactivatedUsers { get; set; }
+		public List<string>? ReactivatedUids { get; set; }
 	}
 }

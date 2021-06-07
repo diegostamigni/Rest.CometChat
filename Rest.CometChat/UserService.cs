@@ -52,7 +52,7 @@ namespace Rest.CometChat
 			var requestUrl = requestUri.AbsoluteUri;
 			if (options is not null)
 			{
-				requestUrl = OptionsToUrlQuery(options, requestUrl);
+				requestUrl = OptionsToUrlQuery(options.Value, requestUrl);
 			}
 
 			using var httpClient = this.HttpClient;
@@ -79,7 +79,7 @@ namespace Rest.CometChat
 			UpdateUserRequest request,
 			CancellationToken cancellationToken = default)
 		{
-			using var httpRequestMessage = CreateRequest(request, HttpMethod.Post, new Uri(this.BaseUri, $"users/{request.Uid}"));
+			using var httpRequestMessage = CreateRequest(request, HttpMethod.Put, new Uri(this.BaseUri, $"users/{request.Uid}"));
 			using var httpClient = this.HttpClient;
 			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
@@ -96,7 +96,7 @@ namespace Rest.CometChat
 			CancellationToken cancellationToken = default)
 		{
 			using var httpClient = this.HttpClient;
-			using var httpRequestMessage = CreateRequest(new Dictionary<string, object>()
+			using var httpRequestMessage = CreateRequest(new Dictionary<string, object>
 			{
 				{ "permanent", permanent }
 			}, HttpMethod.Delete, new Uri(this.BaseUri, $"users/{uid}"));
@@ -114,70 +114,38 @@ namespace Rest.CometChat
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Delete, new Uri(this.BaseUri, "users"));
 			using var httpClient = this.HttpClient;
+			using var httpRequestMessage = CreateRequest(new Dictionary<string, object>
+			{
+				{ "uidsToDeactivate", uids }
+			}, HttpMethod.Delete, new Uri(this.BaseUri, "users"));
+
 			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 			using var stream = await response.Content.ReadAsStreamAsync();
 
-			return await JsonSerializer
-				.DeserializeAsync<DeactivateUsersResponse>(stream, this.JsonSerializerOptions, cancellationToken);
+			var result = await JsonSerializer
+				.DeserializeAsync<DataContainer<DeactivateUsersResponse>>(stream, this.JsonSerializerOptions, cancellationToken);
+
+			return result?.Entity;
 		}
 
 		public async Task<ReactivateUserResponse?> ReactivateUsersAsync(
 			List<string> uids,
 			CancellationToken cancellationToken = default)
 		{
-			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Put, new Uri(this.BaseUri, "users"));
 			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
-			using var stream = await response.Content.ReadAsStreamAsync();
-
-			return await JsonSerializer
-				.DeserializeAsync<ReactivateUserResponse>(stream, this.JsonSerializerOptions, cancellationToken);
-		}
-
-		public async Task<BlockUserResponse?> BlockUsersAsync(
-			List<string> uids,
-			CancellationToken cancellationToken = default)
-		{
-			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Post, new Uri(this.BaseUri, "users/uid/blockedusers"));
-			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
-			using var stream = await response.Content.ReadAsStreamAsync();
-
-			return await JsonSerializer
-				.DeserializeAsync<BlockUserResponse>(stream, this.JsonSerializerOptions, cancellationToken);
-		}
-
-		public async Task<UnblockUserResponse?> UnblockUsersAsync(
-			List<string> uids,
-			CancellationToken cancellationToken = default)
-		{
-			using var httpRequestMessage = CreateRequest(uids, HttpMethod.Delete, new Uri(this.BaseUri, "users/uid/blockedusers"));
-			using var httpClient = this.HttpClient;
-			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
-			using var stream = await response.Content.ReadAsStreamAsync();
-
-			return await JsonSerializer
-				.DeserializeAsync<UnblockUserResponse>(stream, this.JsonSerializerOptions, cancellationToken);
-		}
-
-		public async Task<PaginatedList<User>?> ListBlockedUsersAsync(
-			ListBlockedUsersOptions? options = default,
-			CancellationToken cancellationToken = default)
-		{
-			var requestUri = new Uri(this.BaseUri, "users/uid/blockedusers");
-			var requestUrl = requestUri.AbsoluteUri;
-			if (options is not null)
+			using var httpRequestMessage = CreateRequest(new Dictionary<string, object>
 			{
-				requestUrl = OptionsToUrlQuery(options, requestUrl);
-			}
+				{ "uidsToActivate", uids }
+			}, HttpMethod.Put, new Uri(this.BaseUri, "users"));
 
-			using var httpClient = this.HttpClient;
-			using var stream = await httpClient.GetStreamAsync(requestUrl);
+			using var response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
+			using var stream = await response.Content.ReadAsStreamAsync();
 
-			return await JsonSerializer
-				.DeserializeAsync<PaginatedList<User>>(stream, this.JsonSerializerOptions, cancellationToken);
+			var result = await JsonSerializer
+				.DeserializeAsync<DataContainer<ReactivateUserResponse>>(stream, this.JsonSerializerOptions, cancellationToken);
+
+			return result?.Entity;
 		}
 	}
 }
