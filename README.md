@@ -1,6 +1,8 @@
 # Rest.CometChat
 This is an unofficial .NET (standard) library for [CometChat](https://prodocs.cometchat.com/reference) REST APIs.
 
+[![.NET](https://github.com/diegostamigni/Rest.CometChat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/diegostamigni/Rest.CometChat/actions/workflows/dotnet.yml)
+
 ## Description
 All APIs are grouped in services:
  * User service
