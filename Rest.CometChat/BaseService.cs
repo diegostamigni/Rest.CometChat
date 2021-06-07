@@ -8,7 +8,7 @@ using Rest.CometChat.Abstractions;
 
 namespace Rest.CometChat
 {
-	public abstract class Service
+	public abstract class BaseService
 	{
 		private readonly ICometChatConfig config;
 		private readonly IHttpClientFactory? httpClientFactory;
@@ -53,18 +53,18 @@ namespace Rest.CometChat
 			}
 		}
 
-		protected Service(ICometChatConfig config)
+		protected BaseService(ICometChatConfig config)
 		{
 			this.config = config;
 		}
 
-		protected Service(ICometChatConfig config, HttpClient httpClient)
+		protected BaseService(ICometChatConfig config, HttpClient httpClient)
 		{
 			this.config = config;
 			this.httpClient = httpClient;
 		}
 
-		protected Service(ICometChatConfig config, IHttpClientFactory httpClientFactory)
+		protected BaseService(ICometChatConfig config, IHttpClientFactory httpClientFactory)
 		{
 			this.config = config;
 			this.httpClientFactory = httpClientFactory;

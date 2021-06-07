@@ -11,7 +11,7 @@ using Rest.CometChat.ServiceModel;
 
 namespace Rest.CometChat
 {
-	public class UserService : Service, IUserService
+	public class UserService : BaseService, IUserService
 	{
 		public UserService(ICometChatConfig config) : base(config)
 		{
