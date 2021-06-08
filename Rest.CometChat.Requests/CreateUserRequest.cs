@@ -22,7 +22,7 @@ namespace Rest.CometChat.Requests
 		/// <summary>
 		/// Additional information about the user as JSON.
 		/// </summary>
-		public object? Metadata { get; set; }
+		public Dictionary<string, object>? Metadata { get; set; }
 
 		/// <summary>
 		/// Includes authToken of created user in response.

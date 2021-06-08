@@ -1,4 +1,6 @@
-﻿namespace Rest.CometChat.ServiceModel
+﻿using System.Collections.Generic;
+
+namespace Rest.CometChat.ServiceModel
 {
 	public class User
 	{
@@ -31,5 +33,7 @@
 		public bool? HasBlockedMe { get; set; }
 
 		public bool? BlockedByMe { get; set; }
+
+		public Dictionary<string, object>? Metadata { get; set; }
 	}
 }

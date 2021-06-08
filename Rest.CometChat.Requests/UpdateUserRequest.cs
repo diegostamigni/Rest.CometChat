@@ -28,7 +28,7 @@ namespace Rest.CometChat.Requests
 		/// Additional information about the user as JSON.
 		/// If you plan to use Email Notification or SMS Notification extensions, Please add the private metadata here.
 		/// </summary>
-		public object? Metadata { get; set; }
+		public Dictionary<string, object>? Metadata { get; set; }
 
 		/// <summary>
 		/// Updates tags of a specific group.

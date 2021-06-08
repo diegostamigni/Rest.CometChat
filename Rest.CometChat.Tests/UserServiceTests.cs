@@ -18,7 +18,14 @@ namespace Rest.CometChat.Tests
 			var userId = Guid.NewGuid();
 			var userName = userId.ToString("N");
 
-			var result = await this.Service!.CreateAsync(new(userId.ToString(), userName));
+			var result = await this.Service!.CreateAsync(new(userId.ToString(), userName)
+			{
+				Metadata = new()
+				{
+					{ "Metadata1", "This is a user metadata" }
+				}
+			});
+
 			result.ShouldNotBeNull();
 			result.ShouldSatisfyAllConditions
 			(
