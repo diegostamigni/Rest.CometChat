@@ -17,11 +17,6 @@ namespace Rest.CometChat
 		{
 		}
 
-		public UserService(ICometChatConfig config, HttpClient httpClient)
-			: base(config, httpClient)
-		{
-		}
-
 		public UserService(ICometChatConfig config, IHttpClientFactory httpClientFactory)
 			: base(config, httpClientFactory)
 		{

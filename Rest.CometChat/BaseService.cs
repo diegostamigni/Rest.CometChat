@@ -12,7 +12,6 @@ namespace Rest.CometChat
 	{
 		private readonly ICometChatConfig config;
 		private readonly IHttpClientFactory? httpClientFactory;
-		private readonly HttpClient? httpClient;
 
 		protected string BaseUrl => $"https://api-{this.config.Region}.cometchat.io/v2.0/";
 
@@ -29,17 +28,9 @@ namespace Rest.CometChat
 		{
 			get
 			{
-				HttpClient configuredHttpClient;
-				if (this.httpClient is not null)
-				{
-					configuredHttpClient = this.httpClient;
-				}
-				else
-				{
-					configuredHttpClient = this.httpClientFactory is not null
-						? this.httpClientFactory.CreateClient()
-						: new();
-				}
+				var configuredHttpClient = this.httpClientFactory is not null
+					? this.httpClientFactory.CreateClient()
+					: new();
 
 				if (configuredHttpClient is null)
 				{
@@ -56,12 +47,6 @@ namespace Rest.CometChat
 		protected BaseService(ICometChatConfig config)
 		{
 			this.config = config;
-		}
-
-		protected BaseService(ICometChatConfig config, HttpClient httpClient)
-		{
-			this.config = config;
-			this.httpClient = httpClient;
 		}
 
 		protected BaseService(ICometChatConfig config, IHttpClientFactory httpClientFactory)

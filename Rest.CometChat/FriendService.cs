@@ -18,11 +18,6 @@ namespace Rest.CometChat
 		{
 		}
 
-		public FriendService(ICometChatConfig config, HttpClient httpClient)
-			: base(config, httpClient)
-		{
-		}
-
 		public FriendService(ICometChatConfig config, IHttpClientFactory httpClientFactory)
 			: base(config, httpClientFactory)
 		{
