@@ -6,10 +6,10 @@ using Shouldly;
 
 namespace Rest.CometChat.Tests
 {
+	[Explicit]
 	[TestFixture]
 	public class FriendServiceTests : BaseServiceTests<IFriendService>
 	{
-		[Explicit]
 		[TestCase("cd2ee81e-e285-4cae-849f-d968dc47785f", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
 		public async Task AddFriend_Success(string uid, params string[] friends)
 		{
@@ -36,7 +36,6 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[Explicit]
 		[TestCase("cd2ee81e-e285-4cae-849f-d968dc47785f", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
 		public async Task RemoveFriend_Success(string uid, params string[] friends)
 		{

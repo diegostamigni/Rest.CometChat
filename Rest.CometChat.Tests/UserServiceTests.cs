@@ -9,6 +9,7 @@ using Shouldly;
 
 namespace Rest.CometChat.Tests
 {
+	[Explicit]
 	[TestFixture]
 	public class UserServiceTests : BaseServiceTests<IUserService>
 	{
@@ -113,7 +114,6 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[Explicit]
 		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", true)]
 		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", false)]
 		public async Task DeactivateUser_Success(string uid, bool permanent)
@@ -135,7 +135,6 @@ namespace Rest.CometChat.Tests
 			}
 		}
 
-		[Explicit]
 		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
 		public async Task DeactivateUsers_Success(params string[] uids)
 		{
@@ -147,7 +146,6 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[Explicit]
 		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
 		public async Task ReactivateUsers_Success(params string[] uids)
 		{
