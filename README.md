@@ -1,5 +1,5 @@
 # Rest.CometChat
-This is an unofficial .NET (standard) library for [CometChat](https://prodocs.cometchat.com/reference) REST APIs.
+This is an unofficial .NET (standard) library for [CometChat](https://prodocs.cometchat.com/reference) REST APIs supporting v2 and v3 API versions.
 
 [![.NET](https://github.com/diegostamigni/Rest.CometChat/actions/workflows/dotnet.yml/badge.svg)](https://github.com/diegostamigni/Rest.CometChat/actions/workflows/dotnet.yml)
 
@@ -18,7 +18,7 @@ All concrete classes respect a contract (ex. `UserService` -> `IUserService`) ma
  * ApiKey
  * Region
 
-Because this config is strickly dependant on your project, you are supposed to inherit from this contract and provide an implementaion upon service construction.
+Because this config is strictly dependant on your project, you are supposed to inherit from this contract and provide an implementation upon service construction.
 
 
 ### Examples

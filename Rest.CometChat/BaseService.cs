@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Rest.CometChat.Abstractions;
+using Rest.CometChat.ServiceModel;
 
 namespace Rest.CometChat
 {
@@ -13,7 +14,12 @@ namespace Rest.CometChat
 		private readonly ICometChatConfig config;
 		private readonly IHttpClientFactory? httpClientFactory;
 
-		protected string BaseUrl => $"https://api-{this.config.Region}.cometchat.io/v2.0/";
+		protected string BaseUrl => this.config.ApiVersion switch
+		{
+			ApiVersion.V2 or null => $"https://api-{this.config.Region}.cometchat.io/v2.0/",
+			ApiVersion.V3 => $"https://{this.config.AppId}.api-{this.config.Region}.cometchat.io/v3/",
+			_ => throw new ArgumentOutOfRangeException($"{this.config.ApiVersion}")
+		};
 
 		protected Uri BaseUri => new Uri(this.BaseUrl);
 

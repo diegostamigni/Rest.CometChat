@@ -10,7 +10,7 @@ namespace Rest.CometChat.Tests
 	[TestFixture]
 	public class FriendServiceTests : BaseServiceTests<IFriendService>
 	{
-		[TestCase("cd2ee81e-e285-4cae-849f-d968dc47785f", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53", "7853eb99-e8e1-4ec4-b12b-3c5434d51c02")]
 		public async Task AddFriend_Success(string uid, params string[] friends)
 		{
 			var result = await this.Service!.AddAsync(uid, friends.ToList());
@@ -23,7 +23,7 @@ namespace Rest.CometChat.Tests
 			friendResponse.Success.ShouldBe(true );
 		}
 
-		[TestCase("cd2ee81e-e285-4cae-849f-d968dc47785f", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53", "7853eb99-e8e1-4ec4-b12b-3c5434d51c02")]
 		public async Task ListFriend_Success(string uid, string friendUid)
 		{
 			var result = await this.Service!.ListAsync(uid);
@@ -36,7 +36,7 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[TestCase("cd2ee81e-e285-4cae-849f-d968dc47785f", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53", "7853eb99-e8e1-4ec4-b12b-3c5434d51c02")]
 		public async Task RemoveFriend_Success(string uid, params string[] friends)
 		{
 			var result = await this.Service!.RemoveAsync(uid, friends.ToList());

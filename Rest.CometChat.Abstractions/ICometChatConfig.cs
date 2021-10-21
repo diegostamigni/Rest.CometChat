@@ -1,3 +1,5 @@
+using Rest.CometChat.ServiceModel;
+
 namespace Rest.CometChat.Abstractions
 {
 	public interface ICometChatConfig
@@ -10,5 +12,7 @@ namespace Rest.CometChat.Abstractions
 		/// The region on which your CometChat application resides. Typically either `us` or `eu`.
 		/// </summary>
 		public string? Region { get; set; }
+
+		public ApiVersion? ApiVersion { get; set; }
 	}
 }

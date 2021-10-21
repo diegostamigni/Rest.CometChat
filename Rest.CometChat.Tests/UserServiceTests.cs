@@ -93,7 +93,7 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[TestCase("6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53")]
 		public async Task UpdateUser_Success(string uid)
 		{
 			var newName = $"Name {Guid.NewGuid():N}";
@@ -114,8 +114,8 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", true)]
-		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", false)]
+		[TestCase("d740a4db-e2c9-4fbd-879a-49f378c2690a", true)]
+		[TestCase("c5435812-212e-475e-ab1e-c0c154eda3c7", false)]
 		public async Task DeactivateUser_Success(string uid, bool permanent)
 		{
 			var result = await this.Service!.DeactivateUserAsync(uid, permanent);
@@ -135,7 +135,7 @@ namespace Rest.CometChat.Tests
 			}
 		}
 
-		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53", "7853eb99-e8e1-4ec4-b12b-3c5434d51c02")]
 		public async Task DeactivateUsers_Success(params string[] uids)
 		{
 			var result = await this.Service!.DeactivateUsersAsync(uids.ToList());
@@ -146,7 +146,7 @@ namespace Rest.CometChat.Tests
 			);
 		}
 
-		[TestCase("190cee76-2c25-409e-a0c3-dabe451521e1", "6d5e5a79-38dc-48ea-afb3-88e09a7f31f4")]
+		[TestCase("d05178fe-7741-48c8-b2be-e4e458c4eb53", "7853eb99-e8e1-4ec4-b12b-3c5434d51c02")]
 		public async Task ReactivateUsers_Success(params string[] uids)
 		{
 			var result = await this.Service!.ReactivateUsersAsync(uids.ToList());
