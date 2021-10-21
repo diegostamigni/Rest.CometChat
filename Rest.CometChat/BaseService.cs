@@ -14,11 +14,11 @@ namespace Rest.CometChat
 		private readonly ICometChatConfig config;
 		private readonly IHttpClientFactory? httpClientFactory;
 
-		protected string BaseUrl => this.config.ApiVersion switch
+		protected string BaseUrl => this.config.CometChatApiVersion switch
 		{
-			ApiVersion.V2 or null => $"https://api-{this.config.Region}.cometchat.io/v2.0/",
-			ApiVersion.V3 => $"https://{this.config.AppId}.api-{this.config.Region}.cometchat.io/v3/",
-			_ => throw new ArgumentOutOfRangeException($"{this.config.ApiVersion}")
+			ApiVersion.V2 or null => $"https://api-{this.config.CometChatRegion}.cometchat.io/v2.0/",
+			ApiVersion.V3 => $"https://{this.config.CometChatAppId}.api-{this.config.CometChatRegion}.cometchat.io/v3/",
+			_ => throw new ArgumentOutOfRangeException($"{this.config.CometChatApiVersion}")
 		};
 
 		protected Uri BaseUri => new Uri(this.BaseUrl);
@@ -43,8 +43,8 @@ namespace Rest.CometChat
 					throw new ArgumentNullException(nameof(configuredHttpClient), "Invalid http client");
 				}
 
-				configuredHttpClient.DefaultRequestHeaders.Add("appId", this.config.AppId);
-				configuredHttpClient.DefaultRequestHeaders.Add("apiKey", this.config.ApiKey);
+				configuredHttpClient.DefaultRequestHeaders.Add("appId", this.config.CometChatAppId);
+				configuredHttpClient.DefaultRequestHeaders.Add("apiKey", this.config.CometChatApiKey);
 				configuredHttpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 				return configuredHttpClient;
 			}
