@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.WebUtilities;
 using Rest.CometChat.Abstractions;
 using Rest.CometChat.ServiceModel;
@@ -26,7 +27,7 @@ namespace Rest.CometChat
 		protected readonly JsonSerializerOptions JsonSerializerOptions = new()
 		{
 			PropertyNameCaseInsensitive = true,
-			IgnoreNullValues = true,
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
 
