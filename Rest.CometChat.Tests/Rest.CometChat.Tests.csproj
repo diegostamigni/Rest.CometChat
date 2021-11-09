@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp6.0</TargetFramework>
+        <TargetFrameworks>netcoreapp5.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -18,8 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Rest.CometChat.Abstractions\Rest.CometChat.Abstractions.csproj" />
-      <ProjectReference Include="..\Rest.CometChat\Rest.CometChat.csproj" />
+        <ProjectReference Include="..\Rest.CometChat.Abstractions\Rest.CometChat.Abstractions.csproj" />
+        <ProjectReference Include="..\Rest.CometChat\Rest.CometChat.csproj" />
     </ItemGroup>
 
 </Project>
